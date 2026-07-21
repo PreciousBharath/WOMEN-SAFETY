@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Women Safety System{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 class="mb-3"><i class="fas fa-home"></i> Dashboard</h1>
+            <p class="text-muted">Welcome back, <strong>{{ user['username'] }}</strong>!</p>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center stats-card">
+                <div class="card-body">
+                    <i class="fas fa-chart-line fa-2x text-primary mb-3"></i>
+                    <h6 class="card-title">Total Predictions</h6>
+                    <h2 class="text-primary">{{ total_predictions }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center stats-card">
+                <div class="card-body">
+                    <i class="fas fa-check-circle fa-2x text-success mb-3"></i>
+                    <h6 class="card-title">Safe Areas</h6>
+                    <h2 class="text-success">{{ safe_count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center stats-card">
+                <div class="card-body">
+                    <i class="fas fa-exclamation-circle fa-2x text-danger mb-3"></i>
+                    <h6 class="card-title">Unsafe Areas</h6>
+                    <h2 class="text-danger">{{ unsafe_count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center stats-card">
+                <div class="card-body">
+                    <i class="fas fa-percentage fa-2x text-warning mb-3"></i>
+                    <h6 class="card-title">Safety Rate</h6>
+                    <h2 class="text-warning">
+                        {% if total_predictions > 0 %}
+                            {{ ((safe_count / total_predictions) * 100) | int }}%
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h3 class="mb-3">Quick Actions</h3>
+            <div class="btn-group" role="group">
+                <a href="{{ url_for('predict') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-search"></i> New Prediction
+                </a>
+                <a href="{{ url_for('history') }}" class="btn btn-info btn-lg">
+                    <i class="fas fa-history"></i> View History
+                </a>
+                <a href="{{ url_for('reports') }}" class="btn btn-success btn-lg">
+                    <i class="fas fa-chart-bar"></i> View Reports
+                </a>
+                <a href="{{ url_for('emergency') }}" class="btn btn-danger btn-lg">
+                    <i class="fas fa-exclamation-triangle"></i> Report Emergency
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Predictions -->
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="mb-3"><i class="fas fa-recent"></i> Recent Predictions</h3>
+            {% if recent_predictions %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Area</th>
+                                <th>Zone</th>
+                                <th>Time Period</th>
+                                <th>Result</th>
+                                <th>Risk Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for prediction in recent_predictions %}
+                                <tr>
+                                    <td>{{ prediction['timestamp'] }}</td>
+                                    <td>{{ prediction['area'] }}</td>
+                                    <td>{{ prediction['zone'] }}</td>
+                                    <td>{{ prediction['time_period'] }}</td>
+                                    <td>
+                                        {% if prediction['prediction_result'] == 'Safe' %}
+                                            <span class="badge bg-success"><i class="fas fa-check"></i> Safe</span>
+                                        {% else %}
+                                            <span class="badge bg-danger"><i class="fas fa-exclamation"></i> Unsafe</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-warning">{{ prediction['risk_score'] | round(2) }}</span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> No predictions yet. <a href="{{ url_for('predict') }}">Make your first prediction</a>!
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Reports & Analytics - Women Safety System{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4"><i class="fas fa-chart-bar"></i> Reports & Analytics</h1>
+
+    <div class="row">
+        <!-- Zone Statistics -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-compass"></i> Zone Statistics</h5>
+                </div>
+                <div class="card-body">
+                    {% if zone_stats %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Zone</th>
+                                        <th>Total</th>
+                                        <th>Unsafe</th>
+                                        <th>Safety Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for stat in zone_stats %}
+                                        <tr>
+                                            <td><strong>{{ stat['zone'] }}</strong></td>
+                                            <td>{{ stat['count'] }}</td>
+                                            <td><span class="badge bg-danger">{{ stat['unsafe_count'] or 0 }}</span></td>
+                                            <td>
+                                                {% set safe_rate = ((stat['count'] - (stat['unsafe_count'] or 0)) / stat['count'] * 100) | int %}
+                                                <div class="progress" style="height: 20px;">
+                                                    <div class="progress-bar {% if safe_rate >= 80 %}bg-success{% elif safe_rate >= 50 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                                         style="width: {{ safe_rate }}%;">
+                                                        {{ safe_rate }}%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No zone statistics available yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Time Period Statistics -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-clock"></i> Time Period Statistics</h5>
+                </div>
+                <div class="card-body">
+                    {% if time_stats %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Time Period</th>
+                                        <th>Total</th>
+                                        <th>Unsafe</th>
+                                        <th>Risk Level</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for stat in time_stats %}
+                                        <tr>
+                                            <td><strong>{{ stat['time_period'] }}</strong></td>
+                                            <td>{{ stat['count'] }}</td>
+                                            <td><span class="badge bg-danger">{{ stat['unsafe_count'] or 0 }}</span></td>
+                                            <td>
+                                                {% set risk_percentage = (stat['unsafe_count'] or 0) / stat['count'] * 100 %}
+                                                {% if risk_percentage >= 50 %}
+                                                    <span class="badge bg-danger">High</span>
+                                                {% elif risk_percentage >= 25 %}
+                                                    <span class="badge bg-warning">Medium</span>
+                                                {% else %}
+                                                    <span class="badge bg-success">Low</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No time period statistics available yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Section -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-pie"></i> Summary Report</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <h6 class="text-muted">Most Predictions</h6>
+                            <h4>
+                                {% if zone_stats %}
+                                    {% set max_zone = zone_stats | max(attribute='count') %}
+                                    {{ max_zone['zone'] }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </h4>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="text-muted">Riskiest Time Period</h6>
+                            <h4>
+                                {% if time_stats %}
+                                    {% set risky_time = time_stats | max(attribute='unsafe_count') %}
+                                    {{ risky_time['time_period'] }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </h4>
+                        </div>
+                        <div class="col-md-4">
+                            <h6 class="text-muted">Overall Safety Trend</h6>
+                            <h4 class="text-success"><i class="fas fa-arrow-up"></i> Improving</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="mt-4">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

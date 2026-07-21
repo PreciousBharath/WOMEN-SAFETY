@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}User Profile - Women Safety System{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-6 mx-auto">
+            <h1 class="mb-4"><i class="fas fa-user-circle"></i> User Profile</h1>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Profile Information Card -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-id-card"></i> Account Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Username:</strong></label>
+                        <p>{{ user['username'] }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Email:</strong></label>
+                        <p>{{ user['email'] }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Account Created:</strong></label>
+                        <p>{{ user['created_at'] }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Last Login:</strong></label>
+                        <p>{{ user['last_login'] if user['last_login'] else 'Never' }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Edit Form -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-edit"></i> Edit Profile</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('update_profile') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">
+                                <i class="fas fa-phone"></i> Phone Number
+                            </label>
+                            <input type="tel" class="form-control" id="phone" name="phone" 
+                                   value="{{ user['phone'] or '' }}" placeholder="Enter your phone number">
+                        </div>
+                        <div class="mb-3">
+                            <label for="location" class="form-label">
+                                <i class="fas fa-map-marker-alt"></i> Location
+                            </label>
+                            <input type="text" class="form-control" id="location" name="location" 
+                                   value="{{ user['location'] or '' }}" placeholder="Enter your location">
+                        </div>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Change Password Form -->
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-key"></i> Change Password</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('change_password') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="current_password" class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="current_password" 
+                                   name="current_password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="new_password" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="new_password" 
+                                   name="new_password" required>
+                            <small class="text-muted">Min 6 characters</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirm_password" 
+                                   name="confirm_password" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-refresh"></i> Change Password
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="mt-4">
+                <a href="{{ url_for('settings') }}" class="btn btn-info">
+                    <i class="fas fa-cog"></i> Go to Settings
+                </a>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

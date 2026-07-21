@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Emergency Alert - Women Safety System{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-6 mx-auto">
+            <div class="card border-danger shadow-lg">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="mb-0"><i class="fas fa-exclamation-triangle fa-2x"></i></h2>
+                    <h4 class="mb-0">Emergency Alert System</h4>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show m-3" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <div class="card-body">
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-circle"></i> <strong>Important:</strong> This feature is for reporting unsafe situations or emergencies.
+                    </div>
+
+                    <form action="{{ url_for('emergency') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="location" class="form-label">
+                                <i class="fas fa-map-marker-alt"></i> <strong>Location</strong>
+                            </label>
+                            <input type="text" class="form-control form-control-lg" id="location" 
+                                   name="location" placeholder="Enter the exact location" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">
+                                <i class="fas fa-comment-dots"></i> <strong>Description</strong>
+                            </label>
+                            <textarea class="form-control" id="description" name="description" 
+                                      rows="5" placeholder="Describe the situation..." required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="severity" class="form-label">
+                                <i class="fas fa-signal"></i> <strong>Severity Level</strong>
+                            </label>
+                            <select class="form-select form-select-lg" id="severity" name="severity" required>
+                                <option value="">-- Select Severity --</option>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                                <option value="critical">Critical</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                <i class="fas fa-phone"></i> Report Emergency
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="alert alert-info mt-4">
+                        <h6><i class="fas fa-phone-alt"></i> Emergency Contacts</h6>
+                        <p class="mb-1"><strong>Police:</strong> 100</p>
+                        <p class="mb-1"><strong>Women's Helpline:</strong> 1091</p>
+                        <p class="mb-0"><strong>Ambulance:</strong> 102</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

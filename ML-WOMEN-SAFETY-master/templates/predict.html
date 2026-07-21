@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}Predict Safety - Women Safety System{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0"><i class="fas fa-search"></i> Safety Prediction</h2>
+                    <p class="small mb-0">Analyze location safety based on environmental factors</p>
+                </div>
+
+                <div class="card-body p-4">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form action="{{ url_for('predict') }}" method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="area" class="form-label">
+                                    <i class="fas fa-map-marker-alt"></i> Area
+                                </label>
+                                <select class="form-select form-select-lg" id="area" name="area" required>
+                                    <option value="">-- Select Area --</option>
+                                    {% for area in areas %}
+                                        <option value="{{ area }}">{{ area }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="zone" class="form-label">
+                                    <i class="fas fa-compass"></i> Zone
+                                </label>
+                                <select class="form-select form-select-lg" id="zone" name="zone" required>
+                                    <option value="">-- Select Zone --</option>
+                                    {% for zone in zones %}
+                                        <option value="{{ zone }}">{{ zone }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="time" class="form-label">
+                                    <i class="fas fa-clock"></i> Time Period
+                                </label>
+                                <select class="form-select form-select-lg" id="time" name="time" required>
+                                    <option value="">-- Select Time --</option>
+                                    {% for time in times %}
+                                        <option value="{{ time }}">{{ time }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="people" class="form-label">
+                                    <i class="fas fa-people-group"></i> People Frequency
+                                </label>
+                                <select class="form-select form-select-lg" id="people" name="people" required>
+                                    <option value="">-- Select Frequency --</option>
+                                    {% for people in peoples %}
+                                        <option value="{{ people }}">{{ people }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="police" class="form-label">
+                                    <i class="fas fa-shield-alt"></i> Police Station Nearby?
+                                </label>
+                                <select class="form-select form-select-lg" id="police" name="police" required>
+                                    <option value="">-- Select --</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="bar" class="form-label">
+                                    <i class="fas fa-beer"></i> Bar Nearby?
+                                </label>
+                                <select class="form-select form-select-lg" id="bar" name="bar" required>
+                                    <option value="">-- Select --</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="tier" class="form-label">
+                                    <i class="fas fa-layer-group"></i> Tier
+                                </label>
+                                <select class="form-select form-select-lg" id="tier" name="tier" required>
+                                    <option value="">-- Select Tier --</option>
+                                    {% for tier in tiers %}
+                                        <option value="{{ tier }}">{{ tier }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="residence" class="form-label">
+                                    <i class="fas fa-home"></i> Residence Level
+                                </label>
+                                <select class="form-select form-select-lg" id="residence" name="residence" required>
+                                    <option value="">-- Select Level --</option>
+                                    {% for residence in residences %}
+                                        <option value="{{ residence }}">{{ residence }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-search"></i> Analyze Safety
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Information Card -->
+            <div class="card mt-4 border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> How It Works</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check-circle text-success"></i> <strong>Area:</strong> Select your area of interest</li>
+                        <li><i class="fas fa-check-circle text-success"></i> <strong>Zone:</strong> Choose the zone (directional)</li>
+                        <li><i class="fas fa-check-circle text-success"></i> <strong>Time Period:</strong> Select when you plan to travel</li>
+                        <li><i class="fas fa-check-circle text-success"></i> <strong>Environmental Factors:</strong> Input surrounding conditions</li>
+                        <li><i class="fas fa-check-circle text-success"></i> <strong>Get Results:</strong> Receive safety assessment and recommendations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

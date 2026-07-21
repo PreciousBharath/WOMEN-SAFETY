@@ -1,0 +1,11 @@
+Go to https://www.twilio.com/
+
+Create a free account.
+
+After verifying your phone number, you'll get:
+
+Account SID
+
+Auth Token
+
+Twilio Phone Number
